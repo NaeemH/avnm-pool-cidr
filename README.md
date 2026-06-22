@@ -79,6 +79,18 @@ mypy src
 pytest --cov
 ```
 
+### Test layers
+
+| Layer | What it covers | Where |
+|---|---|---|
+| Unit | Pure CIDR math (`tests/test_cidr.py`) and inline-mocked `az` calls (`tests/test_ipam.py`, `tests/test_cli.py`) | Every CI run, no network |
+| Snapshot | Full CLI run against scrubbed JSON fixtures of real `az network manager ipam-pool ...` output (`tests/test_cli_with_fixtures.py`) | Every CI run, no network |
+| Smoke | Operator-run live check against a personal Azure subscription | Pre-tag, manual |
+
+Snapshot fixtures live in `tests/fixtures/`. Re-record with
+`scripts/record-fixtures.sh` (refuses to run against Microsoft-internal tenants;
+scrubs subscription/RG/VNM names and all GUIDs before writing).
+
 ## License
 
 MIT &copy; 2026 Naeem Hossain

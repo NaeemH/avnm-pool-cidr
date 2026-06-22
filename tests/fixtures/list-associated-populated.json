@@ -1,0 +1,20 @@
+[
+  {
+    "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-app-a/providers/Microsoft.Network/virtualNetworks/vnet-app-a",
+    "addressPrefixes": ["10.0.0.0/24"],
+    "poolId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-net-fixture/providers/Microsoft.Network/networkManagers/vnm-fixture/ipamPools/prod-pool",
+    "description": "vnet for app-a"
+  },
+  {
+    "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-app-b/providers/Microsoft.Network/virtualNetworks/vnet-app-b",
+    "addressPrefixes": ["10.0.1.0/24", "10.0.2.0/24"],
+    "poolId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-net-fixture/providers/Microsoft.Network/networkManagers/vnm-fixture/ipamPools/prod-pool",
+    "description": "vnet for app-b (dual prefix)"
+  },
+  {
+    "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-platform/providers/Microsoft.Network/virtualNetworks/vnet-platform",
+    "addressPrefixes": ["10.1.0.0/22"],
+    "poolId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-net-fixture/providers/Microsoft.Network/networkManagers/vnm-fixture/ipamPools/prod-pool",
+    "description": "platform shared services"
+  }
+]
