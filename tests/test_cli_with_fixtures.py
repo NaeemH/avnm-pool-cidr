@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
 from avnm_pool_cidr.cli import app
@@ -103,3 +104,51 @@ def test_usage_summary_matches_recorded_allocations(fake_az: Any, fixture_loader
     # 10.1.0.0/16 has a single /22 reserved (1024 addrs)
     assert "10.0.0.0/16" in result.stdout
     assert "10.1.0.0/16" in result.stdout
+
+
+def test_usage_reports_exact_utilization_numbers(fake_az: Any, fixture_loader: Any) -> None:
+    """Snapshot the computed used/free/percent columns, not just the parent prefixes."""
+    fake_az(
+        [
+            fixture_loader("pool-show"),
+            fixture_loader("list-associated-populated"),
+        ]
+    )
+    result = runner.invoke(app, ["usage", "prod-pool", *BASE_ARGS])
+    assert result.exit_code == 0
+    out = result.stdout
+    # Parent 10.0.0.0/16: 768 of 65,536 used -> 64,768 free, 1.17%.
+    assert "65,536" in out
+    assert "768" in out
+    assert "64,768" in out
+    assert "1.17%" in out
+    # Parent 10.1.0.0/16: 1,024 used -> 64,512 free, 1.56%.
+    assert "1,024" in out
+    assert "64,512" in out
+    assert "1.56%" in out
+
+
+def test_next_prefix_pool_without_prefixes_errors(fake_az: Any, fixture_loader: Any) -> None:
+    """A pool with an empty addressPrefixes list should exit 1, not crash."""
+    fake_az(
+        [
+            fixture_loader("pool-show-no-prefixes"),
+            fixture_loader("list-associated-empty"),
+        ]
+    )
+    result = runner.invoke(app, ["next-prefix", "prod-pool", "--size", "24", *BASE_ARGS])
+    assert result.exit_code == 1
+
+
+def test_list_surfaces_az_failure(mocker: MockerFixture) -> None:
+    """When `az` is missing, `list` reports an error and exits 1 (not a traceback)."""
+    mocker.patch("avnm_pool_cidr.ipam.shutil.which", return_value=None)
+    result = runner.invoke(app, ["list", "prod-pool", *BASE_ARGS])
+    assert result.exit_code == 1
+
+
+def test_usage_surfaces_az_failure(mocker: MockerFixture) -> None:
+    """When `az` is missing, `usage` reports an error and exits 1 (not a traceback)."""
+    mocker.patch("avnm_pool_cidr.ipam.shutil.which", return_value=None)
+    result = runner.invoke(app, ["usage", "prod-pool", *BASE_ARGS])
+    assert result.exit_code == 1
