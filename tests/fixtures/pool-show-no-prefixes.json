@@ -1,0 +1,16 @@
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-net-fixture/providers/Microsoft.Network/networkManagers/vnm-fixture/ipamPools/prod-pool",
+  "name": "prod-pool",
+  "type": "Microsoft.Network/networkManagers/ipamPools",
+  "location": "eastus",
+  "properties": {
+    "addressPrefixes": [],
+    "description": "Fixture pool with no address prefixes configured (error-path test).",
+    "parentPoolName": null,
+    "provisioningState": "Succeeded"
+  },
+  "systemData": {
+    "createdAt": "2026-01-01T00:00:00Z",
+    "lastModifiedAt": "2026-01-01T00:00:00Z"
+  }
+}
