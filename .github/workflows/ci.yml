@@ -11,11 +11,21 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    name: ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
+        include:
+          # This is a CLI people install on their own machine, so Windows is a
+          # real target. The same ubuntu-only matrix hid 70 failures across the
+          # three sibling repos, including an AttributeError on a primary write
+          # path. This repo already passes on Windows, so the job is a guard
+          # rather than a fix - which is exactly why it can land immediately.
+          - os: windows-latest
+            python-version: "3.13"
 
     steps:
       - uses: actions/checkout@v6
